@@ -1,87 +1,63 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: {{ include "nfs-seed.fullname" . }}
-  labels:
-    {{- include "nfs-seed.labels" . | nindent 4 }}
+  name: nfs-import
 spec:
-  {{- if not .Values.autoscaling.enabled }}
-  replicas: {{ .Values.replicaCount }}
-  {{- end }}
-  selector:
-    matchLabels:
-      {{- include "nfs-seed.selectorLabels" . | nindent 6 }}
-  template:
-    metadata:
-      {{- with .Values.podAnnotations }}
-      annotations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      labels:
-        {{- include "nfs-seed.selectorLabels" . | nindent 8 }}
-    spec:
-      {{- with .Values.imagePullSecrets }}
-      imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      serviceAccountName: {{ include "nfs-seed.serviceAccountName" . }}
+  imagePullSecrets:
+    {{- toYaml . | nindent 8 }}
+  securityContext:
+    {{- toYaml .Values.podSecurityContext | nindent 8 }}
+  containers:
+    - name: {{ .Chart.Name }}
       securityContext:
-        {{- toYaml .Values.podSecurityContext | nindent 8 }}
-      containers:
-        - name: {{ .Chart.Name }}
-          securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-          command: ["sh", "-c", "sleep 30s"]
-          ports:
-            - name: http
-              containerPort: 80
-              protocol: TCP
-          resources:
-            {{- toYaml .Values.resources | nindent 12 }}
-          volumeMounts:
-          - name: nfs-data
-            mountPath: /var/nfs
-      initContainers:
-      - name: import-data
-        image: alpine/git
-        imagePullPolicy: IfNotPresent
-        command: ["/bin/sh", "-c"]
-        args:
-          - rm -rf /tmp/data;
-            git clone https://$(CVS_USERNAME):$(CVS_PASSWORD)@$(NFS_IMPORT_REPO_URI) /tmp/data;
-            mkdir -p /var/nfs/input;
-            mkdir -p /var/nfs/output;
-            chown -R 2516:2516 /var/nfs/input;
-            chown -R 2516:2516 /var/nfs/output;
-            cp -r /tmp/data/set_$(NFS_DATASET_VERSION)/*.xlsx /var/nfs/input;
-            rm -rf /tmp/data;
-            ls -la /var/nfs/input;
-            echo "Finished loading data into nfs volume";
-        env:
-          - name: CVS_USERNAME
-            valueFrom:
-              secretKeyRef:
-                name: bitbucket-auth
-                key: bitbucket_user_name
-                optional: false
-          - name: CVS_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: bitbucket-auth
-                key: bitbucket_app_code
-                optional: false
-        envFrom:
-          - configMapRef:
-              name: nfs-import-config
-        volumeMounts:
-          - name: nfs-data
-            mountPath: /var/nfs
-        securityContext:
-          allowPrivilegeEscalation: false
-          runAsUser: 2516
-      volumes:
+        {{- toYaml .Values.securityContext | nindent 12 }}
+      image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+      imagePullPolicy: {{ .Values.image.pullPolicy }}
+      command: ["sh", "-c", "sleep 30s"]
+      resources:
+        {{- toYaml .Values.resources | nindent 12 }}
+      volumeMounts:
       - name: nfs-data
-        persistentVolumeClaim:
-          claimName: nfs-pvc-data
+        mountPath: /var/nfs
+  initContainers:
+  - name: import-data
+    image: alpine/git
+    imagePullPolicy: IfNotPresent
+    command: ["/bin/sh", "-c"]
+    args:
+      - rm -rf /tmp/data;
+        git clone https://$(CVS_USERNAME):$(CVS_PASSWORD)@$(NFS_IMPORT_REPO_URI) /tmp/data;
+        mkdir -p /var/nfs/input;
+        mkdir -p /var/nfs/output;
+        chown -R 2516:2516 /var/nfs/input;
+        chown -R 2516:2516 /var/nfs/output;
+        cp -r /tmp/data/set_$(NFS_DATASET_VERSION)/*.xlsx /var/nfs/input;
+        rm -rf /tmp/data;
+        ls -la /var/nfs/input;
+        echo "Finished loading data into nfs volume";
+    env:
+      - name: CVS_USERNAME
+        valueFrom:
+          secretKeyRef:
+            name: bitbucket-auth
+            key: bitbucket_user_name
+            optional: false
+      - name: CVS_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: bitbucket-auth
+            key: bitbucket_app_code
+            optional: false
+    envFrom:
+      - configMapRef:
+          name: nfs-import-config
+    volumeMounts:
+      - name: nfs-data
+        mountPath: /var/nfs
+    securityContext:
+      allowPrivilegeEscalation: false
+      runAsUser: 2516
+  volumes:
+  - name: nfs-data
+    persistentVolumeClaim:
+      claimName: nfs-pvc-data
