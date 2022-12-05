@@ -1,0 +1,15 @@
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: nfs-import-config
+  namespace: nfs
+  labels:
+    app: nfs-server
+data:
+  NFS_IMPORT_REPO_URI: bitbucket.org/scient/rws-infra-nfs-import.git
+  NFS_DATASET_VERSION: "202211"
+
+  # Proxy
+  http_proxy: "http://webproxy.rws.nl:8080/"
+  https_proxy: "http://webproxy.rws.nl:8080/"
