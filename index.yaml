@@ -3,12 +3,12 @@ entries:
   nfs-seed:
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2022-12-05T16:01:50.8840245+01:00"
+    created: "2022-12-05T16:06:13.3776399+01:00"
     description: Test chart for RWS NFS Seed
-    digest: e769352568bf1763fceb22681e3a4b6f162f375e918249121a9a58d9075370df
+    digest: 05eaa7d280294972a6a67fbd3961c411ad56596f727505c9ba95a1b50c7c174f
     name: nfs-seed
     type: application
     urls:
-    - https://besartsulejmani.github.io/rws-k8s-helm/nfs-seed-0.3.0.tgz
-    version: 0.3.0
-generated: "2022-12-05T16:01:50.8835121+01:00"
+    - https://besartsulejmani.github.io/rws-k8s-helm/nfs-seed-0.4.0.tgz
+    version: 0.4.0
+generated: "2022-12-05T16:06:13.377055+01:00"
