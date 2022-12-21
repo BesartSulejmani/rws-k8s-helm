@@ -9,12 +9,12 @@ spec:
       protocol: {{ .Values.webService.protocol }}
       port: {{ .Values.webService.port }}
   selector:
-    app: {{- include "demo-dashboard.selectorLabels" . | nindent 4 }}
+    app: {{ include "demo-dashboard.fullname" . }}
 ---
 kind: Service
 apiVersion: v1
 metadata:
-  name: {{ include "demo-dashboard.fullname" . }}
+  name: {{ include "demo-dashboard.fullname" . }}-api
   namespace: {{ .Values.namespace.name }}
 spec:
   ports:
@@ -22,4 +22,4 @@ spec:
       protocol: {{ .Values.apiService.protocol }}
       port: {{ .Values.apiService.port }}
   selector:
-    app: {{- include "demo-dashboard.selectorLabels" . | nindent 4 }}
+    app: {{ include "demo-dashboard.fullname" . }}

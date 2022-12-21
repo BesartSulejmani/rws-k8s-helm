@@ -4,14 +4,14 @@ metadata:
   name: {{ include "demo-dashboard.fullname" . }}
   namespace: {{ .Values.namespace.name }}
   labels:
-    app: {{- include "demo-dashboard.labels" . | nindent 4 }}
+    app: {{ include "demo-dashboard.fullname" . }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      app: {{- include "demo-dashboard.selectorLabels" . | nindent 6 }}
+      app: {{ include "demo-dashboard.fullname" . }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -19,7 +19,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        app: {{- include "demo-dashboard.selectorLabels" . | nindent 8 }}
+        app: {{ include "demo-dashboard.fullname" . }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
