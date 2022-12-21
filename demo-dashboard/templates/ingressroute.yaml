@@ -5,8 +5,11 @@ metadata:
   name: {{ .Values.demoIngress.name }}
   namespace: {{ .Values.namespace.name }}
 spec:
+    
   entryPoints:
-    {{ .Values.demoIngress.entryPoints }}
+    {{- range $v := .Values.demoIngress.entryPoints }}
+    - {{ $v }}
+    {{- end }}
   routes:
     - kind: {{ .Values.demoIngress.routes.kind }}
       match: {{ .Values.demoIngress.routes.match }}
@@ -23,7 +26,9 @@ metadata:
   namespace: {{ .Values.namespace.name }}
 spec:
   entryPoints:
-    {{ .Values.demoIngressLocations.entryPoints }}
+    {{- range $v := .Values.demoIngressLocations.entryPoints }}
+    - {{ $v }}
+    {{- end }}
   routes:
     - kind: {{ .Values.demoIngressLocations.routes.kind }}
       match: {{ .Values.demoIngressLocations.routes.match }}

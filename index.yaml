@@ -3,12 +3,12 @@ entries:
   demo-dashboard:
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2022-12-21T23:22:53.9427339+01:00"
+    created: "2022-12-21T23:58:55.5889236+01:00"
     description: RWS Demo Dashboard
-    digest: f652d9388b5dc268b0969ff915e972c1e6a1d53e5da3d3b6cba25e377614f64e
+    digest: 591a565c864b02841c6e3fbf878f13be31403f5cb54d0664c5730ef555253220
     name: demo-dashboard
     type: application
     urls:
     - https://besartsulejmani.github.io/rws-k8s-helm/demo-dashboard-0.1.0.tgz
     version: 0.1.0
-generated: "2022-12-21T23:22:53.9403915+01:00"
+generated: "2022-12-21T23:58:55.5879106+01:00"
