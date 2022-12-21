@@ -82,11 +82,11 @@ demoIngressLocations:
 
 # Secret(s)
 secret:
-  name: harbor-datalake-cred
+  name: registry-cred
   type: kubernetes.io/dockerconfigjson
-  dockerconfigjson: eyJhdXRocyI6eyJodHRwczovL2hhcmJvci5rOHMuc2VydmljZXMuY25hcC1hbTQuaW50cmFuZXQucndzLm5sIjp7InVzZXJuYW1lIjoicm9ib3RAZGF0YWxha2UrZGF0YWxha2UtcmEiLCJwYXNzd29yZCI6IjFcdTAwMjZGSDVtXmx6RFAwIiwiYXV0aCI6ImNtOWliM1JBWkdGMFlXeGhhMlVyWkdGMFlXeGhhMlV0Y21FNk1TWkdTRFZ0WG14NlJGQXcifX19
+  dockerconfigjson: ""
 
-imagePullSecrets: []
+imagePullSecrets: [registry-cred]
 nameOverride: ""
 fullnameOverride: ""
 
