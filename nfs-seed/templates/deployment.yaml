@@ -15,10 +15,10 @@ spec:
       resources:
         {{- toYaml .Values.resources | nindent 12 }}
       volumeMounts:
-      - name: nfs-data
-        mountPath: /var/nfs
+      - name: {{ .Values.volumeMounts.name }}
+        mountPath: {{ .Values.volumeMounts.mountPath }}
   initContainers:
-  - name: import-data
+  - name: {{ .Values.initContainers.name }}
     image: alpine/git
     imagePullPolicy: IfNotPresent
     command: ["/bin/sh", "-c"]

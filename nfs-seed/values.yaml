@@ -9,7 +9,14 @@ image:
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
-  
+
+volumeMounts:
+  name: nfs-data
+  mountPath: /var/nfs
+
+initContainers:
+  name: 
+
 nameOverride: "nfs-import"
 fullnameOverride: "nfs-import"
 
@@ -20,7 +27,7 @@ podSecurityContext:
 
 securityContext:
   allowPrivilegeEscalation: false
-  runAsUser: 2516
+  runAsUser: 2516 
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
