@@ -49,14 +49,7 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           env:
-            - name: {{ .Values.demoApiContainer.env.minio_host_uri_key }}
-              value: {{ .Values.demoApiContainer.env.minio_host_uri_value }}
-            - name: {{ .Values.demoApiContainer.env.minio_port_key }}
-              value: {{ .Values.demoApiContainer.env.minio_port_value }}
-            - name: {{ .Values.demoApiContainer.env.minio_accesskey_key }}
-              value: {{ .Values.demoApiContainer.env.minio_accesskey_value }}
-            - name: {{ .Values.demoApiContainer.env.minio_secretkey_key }}
-              value: {{ .Values.demoApiContainer.env.minio_secretkey_value }}
+            {{- toYaml .Values.demoApiContainer.env | nindent 12 -}}
       
       {{- with .Values.nodeSelector }}
       nodeSelector:

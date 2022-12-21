@@ -40,15 +40,15 @@ demoApiContainer:
   ports:
     name: api
     containerPort: 5000
-  env: 
-    minio_host_uri_key: MINIO_HOST_URI
-    minio_host_uri_value: "minio.minio"
-    minio_port_key: MINIO_PORT
-    minio_port_value: "9000"
-    minio_accesskey_key: MINIO_ACCESS_KEY
-    minio_accesskey_value: "ivo"
-    minio_secretkey_key: MINIO_SECRET_KEY
-    minio_secretkey_value: "minio123"
+  env:
+    - name: MINIO_HOST_URI
+      value: "minio.minio"
+    - name: MINIO_PORT
+      value: "9000"
+    - name: MINIO_ACCESS_KEY
+      value: "ivo"
+    - name: MINIO_SECRET_KEY
+      value: "minio123"
 
 # IngressRoute(s)
 demoIngress:
