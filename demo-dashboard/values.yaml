@@ -86,7 +86,8 @@ secret:
   type: kubernetes.io/dockerconfigjson
   dockerconfigjson: ""
 
-imagePullSecrets: [registry-cred]
+imagePullSecrets:
+  name: registry-cred
 nameOverride: ""
 fullnameOverride: ""
 

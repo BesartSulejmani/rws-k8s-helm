@@ -21,10 +21,8 @@ spec:
       labels:
         app: {{ include "demo-dashboard.fullname" . }}
     spec:
-      {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        - name: {{ .Values.imagePullSecrets.name }}
       serviceAccountName: {{ include "demo-dashboard.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
