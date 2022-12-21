@@ -41,13 +41,13 @@ demoApiContainer:
     name: api
     containerPort: 5000
   env:
-    - name: MINIO_HOST_URI
+    - name: "MINIO_HOST_URI"
       value: "minio.minio"
-    - name: MINIO_PORT
+    - name: "MINIO_PORT"
       value: "9000"
-    - name: MINIO_ACCESS_KEY
+    - name: "MINIO_ACCESS_KEY"
       value: "ivo"
-    - name: MINIO_SECRET_KEY
+    - name: "MINIO_SECRET_KEY"
       value: "minio123"
 
 # IngressRoute(s)
