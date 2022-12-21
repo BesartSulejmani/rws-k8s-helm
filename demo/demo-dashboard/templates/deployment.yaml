@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "demo-dashboard.fullname" . }}
+  namespace: {{ .Values.namespace.name }}
+  labels:
+    app: {{- include "demo-dashboard.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      app: {{- include "demo-dashboard.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        app: {{- include "demo-dashboard.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "demo-dashboard.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Values.demoContainer.name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.demoContainer.image.repository }}:{{ .Values.demoContainer.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: {{ .Values.demoContainer.ports.name }}
+              containerPort: {{ .Values.demoContainer.ports.containerPort }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+
+        - name: {{ .Values.demoApiContainer.name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.demoApiContainer.image.repository }}:{{ .Values.demoApiContainer.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: {{ .Values.demoApiContainer.ports.name }}
+              containerPort: {{ .Values.demoApiContainer.ports.containerPort }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          env:
+            - name: {{ .Values.demoApiContainer.env.minio_host_uri_key }}
+              value: {{ .Values.demoApiContainer.env.minio_host_uri_value }}
+            - name: {{ .Values.demoApiContainer.env.minio_port_key }}
+              value: {{ .Values.demoApiContainer.env.minio_port_value }}
+            - name: {{ .Values.demoApiContainer.env.minio_accesskey_key }}
+              value: {{ .Values.demoApiContainer.env.minio_accesskey_value }}
+            - name: {{ .Values.demoApiContainer.env.minio_secretkey_key }}
+              value: {{ .Values.demoApiContainer.env.minio_secretkey_value }}
+      
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

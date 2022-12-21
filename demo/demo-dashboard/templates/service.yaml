@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "demo-dashboard.fullname" . }}
+  namespace: {{ .Values.namespace.name }}
+spec:
+  ports:
+    - name: {{ .Values.webService.name }}
+      protocol: {{ .Values.webService.protocol }}
+      port: {{ .Values.webService.port }}
+  selector:
+    app: {{- include "demo-dashboard.selectorLabels" . | nindent 4 }}
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{ include "demo-dashboard.fullname" . }}
+  namespace: {{ .Values.namespace.name }}
+spec:
+  ports:
+    - name: {{ .Values.apiService.name }}
+      protocol: {{ .Values.apiService.protocol }}
+      port: {{ .Values.apiService.port }}
+  selector:
+    app: {{- include "demo-dashboard.selectorLabels" . | nindent 4 }}

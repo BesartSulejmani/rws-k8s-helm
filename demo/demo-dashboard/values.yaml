@@ -1,0 +1,156 @@
+# Default values for demo-dashboard.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  pullPolicy: IfNotPresent
+
+namespace:
+  name: demo
+
+# Service(s)
+webService:
+  type: ClusterIP
+  name: web
+  protocol: TCP
+  port: 80
+
+apiService:
+  name: api
+  protocol: TCP
+  port: 5000
+
+# Container(s)
+demoContainer:
+  name: rws-demo-dashboard
+  image: 
+    repository: harbor.k8s.services.cnap-am4.intranet.rws.nl/datalake/rws-demo-dashboard
+    tag: 2.0.0
+  ports:
+    name: web
+    containerPort: 80
+
+demoApiContainer:
+  name: rws-demo-dashboard-api
+  image: 
+    repository: scient/rws-demo-dashboard-api
+    tag: 1.0.0
+  ports:
+    name: api
+    containerPort: 5000
+  env: 
+    minio_host_uri_key: MINIO_HOST_URI
+    minio_host_uri_value: "minio.minio"
+    minio_port_key: MINIO_PORT
+    minio_port_value: "9000"
+    minio_accesskey_key: MINIO_ACCESS_KEY
+    minio_accesskey_value: "ivo"
+    minio_secretkey_key: MINIO_SECRET_KEY
+    minio_secretkey_value: "minio123"
+
+# IngressRoute(s)
+demoIngress:
+  name: demo-ingress
+  entryPoints:
+    - web
+    - websecure
+  routes:
+    kind: Rule
+    match: Host(`demo-ui.k8s.datalake-poc.cnap-am4.intranet.rws.nl`)
+    services:
+        kind: Service
+        name: demo-dashboard
+        port: web
+
+demoIngressLocations:
+  name: demo-ingress-locations
+  entryPoints:
+    - web
+    - websecure
+  routes:
+    kind: Rule
+    match: Host(`demo-ui.k8s.datalake-poc.cnap-am4.intranet.rws.nl`) && PathPrefix(`/api`)
+    middlewares:
+        name: stripprefix
+    services:
+        kind: Service
+        name: demo-dashboard-api
+        namespace: demo
+        port: api # 8080
+
+# Secret(s)
+secret:
+  name: harbor-datalake-cred
+  type: kubernetes.io/dockerconfigjson
+  dockerconfigjson: eyJhdXRocyI6eyJodHRwczovL2hhcmJvci5rOHMuc2VydmljZXMuY25hcC1hbTQuaW50cmFuZXQucndzLm5sIjp7InVzZXJuYW1lIjoicm9ib3RAZGF0YWxha2UrZGF0YWxha2UtcmEiLCJwYXNzd29yZCI6IjFcdTAwMjZGSDVtXmx6RFAwIiwiYXV0aCI6ImNtOWliM1JBWkdGMFlXeGhhMlVyWkdGMFlXeGhhMlV0Y21FNk1TWkdTRFZ0WG14NlJGQXcifX19
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: false
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: chart-example.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

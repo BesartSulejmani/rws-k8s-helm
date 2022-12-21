@@ -1,0 +1,37 @@
+---
+kind: IngressRoute
+apiVersion: traefik.containo.us/v1alpha1
+metadata:
+  name: {{ .Values.demoIngress.name }}
+  namespace: {{ .Values.namespace.name }}
+spec:
+  entryPoints:
+    {{ .Values.demoIngress.entryPoints }}
+  routes:
+    - kind: {{ .Values.demoIngress.routes.kind }}
+      match: {{ .Values.demoIngress.routes.match }}
+      services:
+        - kind: {{ .Values.demoIngress.routes.services.kind }}
+          name: {{ .Values.demoIngress.routes.services.name }}
+          namespace: {{ .Values.namespace.name }}
+          port: {{ .Values.demoIngress.routes.services.port }} # 80
+---
+kind: IngressRoute
+apiVersion: traefik.containo.us/v1alpha1
+metadata:
+  name: {{ .Values.demoIngressLocations.name }}
+  namespace: {{ .Values.namespace.name }}
+spec:
+  entryPoints:
+    {{ .Values.demoIngressLocations.entryPoints }}
+  routes:
+    - kind: {{ .Values.demoIngressLocations.routes.kind }}
+      match: {{ .Values.demoIngressLocations.routes.match }}
+      middlewares:
+        - name: {{ .Values.demoIngressLocations.routes.middlewares.name }}
+          namespace: {{ .Values.namespace.name }}
+      services:
+        - kind: {{ .Values.demoIngressLocations.routes.services.kind }}
+          name: {{ .Values.demoIngressLocations.routes.services.name }}
+          namespace: {{ .Values.namespace.name }}
+          port: {{ .Values.demoIngressLocations.routes.services.port }}
